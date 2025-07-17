@@ -13,10 +13,12 @@ public class Nejikocontroller : MonoBehaviour
     CharacterController controller;
     Vector3 moveDirection = Vector3.zero;
     public float speed = 0f;
+    Animator animator;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -30,9 +32,15 @@ public class Nejikocontroller : MonoBehaviour
             moveDirection.z = 0.0f;
         }
 
-        Vector3 globalDirection = transform.TransformDirection(moveDirection);
+        //Horizontal(左右入力)があれば、ねじこを回転させる
+        transform.Rotate(0, Input.GetAxis("Horizontal") * 3f, 0);
 
+        //移動量をTransformに変換する
+        Vector3 globalDirection = transform.TransformDirection(moveDirection);
+        //Controllerに移動量を渡す
         controller.Move(globalDirection);
+        //ねじこのアニメーションを最新する
+        animator.SetBool("run", moveDirection.z > 0f);
     }
 }
 
